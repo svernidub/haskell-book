@@ -1,14 +1,28 @@
 module Stream where
 
-import Prelude ((+), (-), (<), (++), otherwise, id)
+import Prelude ((+), (-), (<), (++), (*),
+               otherwise, id, negate, abs, signum, fromInteger)
 import qualified Prelude as P
+
+infixr 1 :&
+
 
 data Stream a = a :& Stream a
 
 
 instance P.Show a => P.Show (Stream a) where
   show xs = showInfinity (P.show (take 5 xs)) where
-    showInfinity x = P.init x ++ "..."
+    showInfinity xs = P.init xs ++ "..."
+
+
+instance P.Num a => P.Num (Stream a) where
+  (+)         xs ys  = zipWith (+) xs ys
+  (-)         xs ys  = zipWith (-) xs ys
+  (*)         xs ys  = zipWith (*) xs ys
+  negate      xs     = map negate xs
+  abs         xs     = map abs xs
+  signum      xs     = map signum xs
+  fromInteger x      = P.error "Not implemented"
 
 
 constStream :: a -> Stream a
@@ -24,33 +38,31 @@ tail (_:&xs) = xs
 
 
 (!!) :: Stream a -> P.Int -> a
-(!!) stream n = (getElement stream 0) where
-  getElement (x:&xs) k | k < n     = getElement xs (n + 1)
-                       | otherwise = x
+(!!) xs 0 = head xs
+(!!) xs n = (tail xs) !! (n - 1)
 
 
 take :: P.Int -> Stream a -> [a]
-take 0 stream = []
-take n stream = (head stream) : (take (n - 1) (tail stream))
+take 0 xs = []
+take n xs = (head xs) : (take (n - 1) (tail xs))
 
 
 map :: (a -> b) -> Stream a -> Stream b
-map f (x:&xs) = (f x) :& (map f xs)
+map f xs = f (head xs) :& map f (tail xs)
 
 
 filter :: (a -> P.Bool) -> Stream a -> Stream a
-filter f (x:&xs) | (f x)     = x :& (filter f xs)
-                 | otherwise = filter f xs
+filter f xs | f (head xs) = head xs :& filter f (tail xs)
+            | otherwise   = filter f (tail xs)
 
 
 zip :: Stream a -> Stream b -> Stream (a, b)
-zip (x:&xs) (y:&ys) = (x, y) :& (zip xs ys)
+zip xs ys = (head xs, head ys) :& zip (tail xs) (tail ys)
 
 
 zipWith :: (a -> b -> c) -> Stream a -> Stream b -> Stream c
-zipWith f (x:&xs) (y:&ys) = (f x y) :& (zipWith f xs ys)
+zipWith f xs ys = f (head xs) (head ys) :& zipWith f (tail xs) (tail ys)
 
 
 iterate :: (a -> a) -> a -> Stream a
-iterate f a = a :& (iterate f (f a))
-
+iterate f a = a :& iterate f (f a)
