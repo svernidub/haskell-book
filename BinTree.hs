@@ -27,13 +27,13 @@ leaves (Node nd1 nd2) = (leaves nd1) ++ (leaves nd2)
 
 testTree :: BinTree Int
 testTree = do
-  let leaf1 = Leaf 1
-      leaf2 = Leaf 2
-      node1 = Node leaf1 leaf2
+    let leaf1 = Leaf 1
+        leaf2 = Leaf 2
+        node1 = Node leaf1 leaf2
 
-      leaf3 = Leaf 3
-      leaf4 = Leaf 4
-      node2 = Node leaf3 leaf4
+        leaf3 = Leaf 3
+        leaf4 = Leaf 4
+        node2 = Node leaf3 leaf4
 
-      tree = Node node1 node2
-  tree
+        tree = Node node1 node2
+    tree

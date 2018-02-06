@@ -11,18 +11,18 @@ data Stream a = a :& Stream a
 
 
 instance P.Show a => P.Show (Stream a) where
-  show xs = showInfinity (P.show (take 5 xs)) where
-    showInfinity xs = P.init xs ++ "..."
+    show xs = showInfinity (P.show (take 5 xs)) where
+        showInfinity xs = P.init xs ++ "..."
 
 
 instance P.Num a => P.Num (Stream a) where
-  (+)         xs ys  = zipWith (+) xs ys
-  (-)         xs ys  = zipWith (-) xs ys
-  (*)         xs ys  = zipWith (*) xs ys
-  negate      xs     = map negate xs
-  abs         xs     = map abs xs
-  signum      xs     = map signum xs
-  fromInteger x      = P.error "Not implemented"
+    (+)         xs ys  = zipWith (+) xs ys
+    (-)         xs ys  = zipWith (-) xs ys
+    (*)         xs ys  = zipWith (*) xs ys
+    negate      xs     = map negate xs
+    abs         xs     = map abs xs
+    signum      xs     = map signum xs
+    fromInteger x      = P.error "Not implemented"
 
 
 constStream :: a -> Stream a
