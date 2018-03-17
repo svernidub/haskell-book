@@ -10,17 +10,22 @@ import Control.Category(Category(..))
 data St a b = St (a -> (b, St a b))
 
 
+instance Category St where
+    id                  = St empty where
+                              empty x = (x, St empty)
+
+    (.) (St f2) (St f1) = St apply where
+                              apply x = let (y, st1) = f1 x
+                                            (z, st2) = f2 y in
+                                            (z, St apply)
+
+
 ap :: St a b -> [a] -> [b]
 ap (St func) xs = map fst (map func xs) where
                       map = GHC.Base.map
                       fst = Data.Tuple.fst
 
 
-instance Category St where
-    id                  = St empty where
-                              empty x = (x, St empty)
-
-    (.) (St f2) (St f1) = St apply where
-        apply x = let (y, st1) = f1 x
-                      (z, st2) = f2 y in
-                  (z, St apply)
+const :: a -> St b a
+const x = St constPair where
+              constPair y = (x, St constPair)
