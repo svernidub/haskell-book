@@ -36,5 +36,3 @@ instance Kleisli (Reader env) where
 
 runReader :: Reader env b -> (env -> b)
 runReader (Reader f) = f
-
-
