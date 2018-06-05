@@ -1,4 +1,8 @@
-module Kleisli where
+module Monads.Kleisli (
+    Category(..),
+    Kleisli(..)  
+) where
+
 
 import Prelude hiding(id, (>>), (*>))
 

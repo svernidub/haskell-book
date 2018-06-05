@@ -3,8 +3,8 @@ module Monads.State (
     runState
 ) where
 
-
-import Kleisli(Kleisli(..))
+import Prelude hiding(State(..))
+import Monads.Kleisli
     
 
 data State s a = State (s -> (a, s))
